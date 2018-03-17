@@ -1,4 +1,4 @@
-function [J grad] = nnCostFunction(nn_params, ...
+function [J, grad] = nnCostFunction(nn_params, ...
                                    input_layer_size, ...
                                    hidden_layer_size, ...
                                    num_labels, ...
@@ -62,10 +62,28 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+eye_matrix = eye(num_labels);
+y_matrix = eye_matrix(y,:);
 
+a1 = [ones(size(X,1),1) X];
+z2 = a1*Theta1';
+a2 = [ones(size(z2,1),1) sigmoid(z2)];
+z3 = a2*Theta2';
+a3 = sigmoid(z3);
+ht = a3;
 
+cost = nan(size(ht));
+for i = 1:num_labels
+    cost(:,i) = y_matrix(:,i).*log(ht(:,i)) + ...
+        (1 - y_matrix(:,i)).*log(1-ht(:,i));
+end
 
+J = (-sum(sum(cost,2),1))/m;
 
+reg = (lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2,2),1) + ...
+    sum(sum(Theta2(:,2:end).^2,2),1));
+
+J = J + reg;
 
 
 
