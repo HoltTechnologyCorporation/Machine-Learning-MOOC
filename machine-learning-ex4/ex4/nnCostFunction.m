@@ -85,20 +85,23 @@ reg = (lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2,2),1) + ...
 
 J = J + reg;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 % -------------------------------------------------------------
+% Backprop
+
+delta3 = a3 - y_matrix;
+delta2 = (delta3*Theta2(:,2:end)).*sigmoidGradient(z2);
+Delta1 = delta2'*a1(:,1:end);
+Delta2 = delta3'*a2(:,1:end);
+
+% Regualarization
+Theta1_grad_1 = (1/m)*Delta1(:,1) + (lambda/m).*Theta1(:,1);
+Theta1_grad_n = (1/m)*Delta1(:,2:end) + (lambda/m)*Theta1(:,2:end);
+Theta1_grad = [Theta1_grad_1 Theta1_grad_n];
+
+Theta2_grad_1 = (1/m)*Delta2(:,1) + (lambda/m).*Theta2(:,1);
+Theta2_grad_n = (1/m)*Delta2(:,2:end) + (lambda/m)*Theta2(:,2:end);
+Theta2_grad = [Theta2_grad_1 Theta2_grad_n];
+
 
 % =========================================================================
 
